@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Communication Labs</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for beautiful analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon"><i class="fa-solid fa-atom"></i></span>
+                    <span class="logo-text">QUANTUM LABS</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-tab="home">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home Overview</span>
+                </button>
+                <button class="nav-btn" data-tab="bell">
+                    <i class="fa-solid fa-circle-nodes"></i>
+                    <span>1. Bell States</span>
+                </button>
+                <button class="nav-btn" data-tab="entanglement">
+                    <i class="fa-solid fa-link"></i>
+                    <span>2. Entanglement</span>
+                </button>
+                <button class="nav-btn" data-tab="teleportation">
+                    <i class="fa-solid fa-bolt-lightning"></i>
+                    <span>3. Teleportation</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <p>Status: <span class="status-online"><i class="fa-solid fa-circle"></i> AerSimulator Online</span></p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="app-header">
+                <div class="header-title-container">
+                    <h1 id="page-title">Home Overview</h1>
+                    <p class="header-subtitle">Learn quantum communication principles with interactive simulations.</p>
+                </div>
+                <div class="header-actions">
+                    <div class="badge"><i class="fa-brands fa-python"></i> Python 3</div>
+                    <div class="badge"><i class="fa-solid fa-layer-group"></i> Qiskit</div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content Container -->
+            <div class="content-body">
+                
+                <!-- TAB 1: HOME -->
+                <section class="tab-content active" id="tab-home">
+                    <div class="hero-section">
+                        <div class="hero-text">
+                            <h2>Welcome to the Quantum Lab!</h2>
+                            <p>
+                                This simulator makes it easy to explore how quantum computing transmits information. Using real quantum circuit simulation via <strong>Qiskit</strong>, you can design circuits, entangle qubits, and teleport quantum states in real-time. Select a module below to start experimenting!
+                            </p>
+                            <button class="btn btn-primary" onclick="switchTab('bell')">
+                                Start Experimenting <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                        <div class="hero-visual">
+                            <i class="fa-solid fa-circle-nodes quantum-mesh"></i>
+                        </div>
+                    </div>
+
+                    <div class="cards-grid">
+                        <!-- Card 1 -->
+                        <div class="concept-card" onclick="switchTab('bell')">
+                            <div class="card-icon"><i class="fa-solid fa-circle-nodes"></i></div>
+                            <h3>1. Bell States</h3>
+                            <p>Create pairs of qubits that are connected (entangled) in specific configurations. Observe how measuring one qubit instantly determines the other.</p>
+                            <span class="card-link">Open Bell States Lab <i class="fa-solid fa-angle-right"></i></span>
+                        </div>
+                        <!-- Card 2 -->
+                        <div class="concept-card" onclick="switchTab('entanglement')">
+                            <div class="card-icon"><i class="fa-solid fa-link"></i></div>
+                            <h3>2. Entanglement Basis</h3>
+                            <p>See how measuring connected qubits in different bases (directions) affects their correlations. Learn about quantum measurement bases.</p>
+                            <span class="card-link">Open Entanglement Lab <i class="fa-solid fa-angle-right"></i></span>
+                        </div>
+                        <!-- Card 3 -->
+                        <div class="concept-card" onclick="switchTab('teleportation')">
+                            <div class="card-icon"><i class="fa-solid fa-bolt-lightning"></i></div>
+                            <h3>3. Quantum Teleportation</h3>
+                            <p>Run the step-by-step teleportation protocol. Safely transfer a quantum state from Alice to Bob using an entangled pair and classical bits.</p>
+                            <span class="card-link">Open Teleportation Lab <i class="fa-solid fa-angle-right"></i></span>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>How it works under the hood</h3>
+                        <div class="tech-grid">
+                            <div class="tech-item">
+                                <strong>Interactive Inputs</strong>
+                                <p>You configure parameters (like measurement bases or state rotation angles) on the left controls panel.</p>
+                            </div>
+                            <div class="tech-item">
+                                <strong>Qiskit Circuit Simulation</strong>
+                                <p>Your configuration is sent to Flask, which constructs the Qiskit circuit and runs it 1024+ times on the simulator.</p>
+                            </div>
+                            <div class="tech-item">
+                                <strong>Live Diagrams</strong>
+                                <p>The backend draws the exact quantum circuit diagram and returns it to your browser instantly.</p>
+                            </div>
+                            <div class="tech-item">
+                                <strong>Easy Analytics</strong>
+                                <p>We parse the measurement counts and display them in simple, clear, colored bar charts to show probability distributions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 2: BELL STATES -->
+                <section class="tab-content" id="tab-bell">
+                    <div class="lab-layout">
+                        <!-- Configuration Panel -->
+                        <div class="panel control-panel">
+                            <h3><i class="fa-solid fa-sliders"></i> Configuration</h3>
+                            <hr class="panel-divider">
+                            
+                            <div class="control-group">
+                                <label for="bell-state-select">Choose a Bell State</label>
+                                <select id="bell-state-select" class="form-control">
+                                    <option value="phi_plus">Perfect Match (00 or 11)</option>
+                                    <option value="phi_minus">Perfect Match with Phase-Shift</option>
+                                    <option value="psi_plus">Perfect Opposite (01 or 10)</option>
+                                    <option value="psi_minus">Perfect Opposite with Phase-Shift</option>
+                                </select>
+                                <small class="form-help">Choose how you want the two qubits to relate. Do you want them to match or be opposite?</small>
+                            </div>
+
+                            <div class="control-group">
+                                <label>Simulation Runs: <span id="bell-shots-val">1024</span></label>
+                                <input type="range" id="bell-shots-slider" min="100" max="8192" step="100" value="1024" class="slider">
+                                <small class="form-help">The number of times we run the circuit to gather average statistics.</small>
+                            </div>
+
+                            <button id="run-bell-btn" class="btn btn-primary btn-block">
+                                <span class="btn-text">Run Circuit</span>
+                                <span class="spinner-container"><i class="fa-solid fa-spinner fa-spin"></i></span>
+                            </button>
+
+                            <div class="theory-card">
+                                <h4>What is a Bell State?</h4>
+                                <p>A Bell State is the simplest form of quantum entanglement. We take two qubits that start at 0. We put the first qubit into a 50/50 superposition using a <strong>Hadamard (H)</strong> gate. Then, we connect them using a <strong>CNOT</strong> gate. This entangles them, making their outcomes permanently linked!</p>
+                            </div>
+                        </div>
+
+                        <!-- Results Panel -->
+                        <div class="panel results-panel">
+                            <div class="panel-header-with-badge">
+                                <h3><i class="fa-solid fa-chart-simple"></i> Simulation Results</h3>
+                                <span id="bell-state-badge" class="result-badge">Perfect Match</span>
+                            </div>
+                            <hr class="panel-divider">
+
+                            <div class="results-grid">
+                                <!-- Circuit diagram container -->
+                                <div class="result-item circuit-container">
+                                    <h4>Your Quantum Circuit</h4>
+                                    <div id="bell-circuit-img-container" class="circuit-placeholder">
+                                        <p class="text-muted"><i class="fa-solid fa-diagram-project"></i> Run the simulation to see the circuit diagram.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Probability counts chart container -->
+                                <div class="result-item chart-container">
+                                    <h4>Measurement Outcomes</h4>
+                                    <div class="chart-wrapper">
+                                        <canvas id="bell-chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="raw-data-section">
+                                <h4>Raw Measurement Frequency</h4>
+                                <div class="raw-counts-wrapper">
+                                    <pre id="bell-raw-counts" class="raw-counts-box">Run the simulation to generate counts...</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 3: QUANTUM ENTANGLEMENT -->
+                <section class="tab-content" id="tab-entanglement">
+                    <div class="lab-layout">
+                        <!-- Configuration Panel -->
+                        <div class="panel control-panel">
+                            <h3><i class="fa-solid fa-sliders"></i> Configuration</h3>
+                            <hr class="panel-divider">
+                            
+                            <div class="control-group">
+                                <label for="alice-basis-select">Alice's Measurement Basis (Q0)</label>
+                                <select id="alice-basis-select" class="form-control">
+                                    <option value="Z">Z-Basis (Up / Down)</option>
+                                    <option value="X">X-Basis (Left / Right)</option>
+                                </select>
+                                <small class="form-help">The direction in which Alice measures her qubit.</small>
+                            </div>
+
+                            <div class="control-group">
+                                <label for="bob-basis-select">Bob's Measurement Basis (Q1)</label>
+                                <select id="bob-basis-select" class="form-control">
+                                    <option value="Z">Z-Basis (Up / Down)</option>
+                                    <option value="X">X-Basis (Left / Right)</option>
+                                </select>
+                                <small class="form-help">The direction in which Bob measures his qubit.</small>
+                            </div>
+
+                            <div class="control-group">
+                                <label>Simulation Runs: <span id="entanglement-shots-val">1024</span></label>
+                                <input type="range" id="entanglement-shots-slider" min="100" max="8192" step="100" value="1024" class="slider">
+                            </div>
+
+                            <button id="run-entanglement-btn" class="btn btn-primary btn-block">
+                                <span class="btn-text">Run Entanglement</span>
+                                <span class="spinner-container"><i class="fa-solid fa-spinner fa-spin"></i></span>
+                            </button>
+
+                            <div class="theory-card">
+                                <h4>How does measurement affect entanglement?</h4>
+                                <p>Entanglement gives correlated results ONLY if both qubits are measured in matching directions. If Alice and Bob both measure Up/Down (Z) or both Left/Right (X), they get perfectly correlated matching results. If they measure in different bases, the quantum correlation is lost, and the results become completely random.</p>
+                            </div>
+                        </div>
+
+                        <!-- Results Panel -->
+                        <div class="panel results-panel">
+                            <div class="panel-header-with-badge">
+                                <h3><i class="fa-solid fa-chart-simple"></i> Simulation Results</h3>
+                                <span id="entanglement-basis-badge" class="result-badge">Z - Z</span>
+                            </div>
+                            <hr class="panel-divider">
+
+                            <div class="results-grid">
+                                <!-- Circuit diagram container -->
+                                <div class="result-item circuit-container">
+                                    <h4>Your Quantum Circuit</h4>
+                                    <div id="entanglement-circuit-img-container" class="circuit-placeholder">
+                                        <p class="text-muted"><i class="fa-solid fa-diagram-project"></i> Run the simulation to see the circuit diagram.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Probability counts chart container -->
+                                <div class="result-item chart-container">
+                                    <h4>Measurement Outcomes</h4>
+                                    <div class="chart-wrapper">
+                                        <canvas id="entanglement-chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="analysis-section" id="entanglement-analysis">
+                                <h4>Correlation Summary</h4>
+                                <div class="analysis-box text-muted">
+                                    Run the simulation to see if the qubits matched!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TAB 4: QUANTUM TELEPORTATION -->
+                <section class="tab-content" id="tab-teleportation">
+                    <div class="lab-layout">
+                        <!-- Configuration Panel -->
+                        <div class="panel control-panel">
+                            <h3><i class="fa-solid fa-sliders"></i> Configuration</h3>
+                            <hr class="panel-divider">
+                            
+                            <div class="control-group">
+                                <label>Prepare Alice's Qubit State (Q0)</label>
+                                <div class="slider-with-values">
+                                    <input type="range" id="teleportation-theta-slider" min="0" max="3.1416" step="0.05" value="0.0" class="slider">
+                                    <div class="theta-presets">
+                                        <button class="preset-btn active" data-theta="0.0">|0⟩ (100% Up)</button>
+                                        <button class="preset-btn" data-theta="1.5708">|+⟩ (50/50 mix)</button>
+                                        <button class="preset-btn" data-theta="3.1416">|1⟩ (100% Down)</button>
+                                    </div>
+                                </div>
+                                <small class="form-help">Use the slider or presets to set Alice's target state. We rotate the qubit state using an RY gate.</small>
+                            </div>
+
+                            <div class="control-group">
+                                <label>Simulation Runs: <span id="teleportation-shots-val">1024</span></label>
+                                <input type="range" id="teleportation-shots-slider" min="100" max="8192" step="100" value="1024" class="slider">
+                            </div>
+
+                            <button id="run-teleportation-btn" class="btn btn-primary btn-block">
+                                <span class="btn-text">Run Teleportation</span>
+                                <span class="spinner-container"><i class="fa-solid fa-spinner fa-spin"></i></span>
+                            </button>
+
+                            <div class="theory-card">
+                                <h4>How does teleportation work?</h4>
+                                <p>We don't physically move a particle. Instead, Alice transfers the exact state of Qubit 0 to Bob's Qubit 2 by using an entangled helper pair (Q1 and Q2). Once Alice measures Q0 and Q1, she sends the result to Bob classically. Bob applies correction gates (CNOT and CZ) to reconstruct Alice's original state on his qubit!</p>
+                            </div>
+                        </div>
+
+                        <!-- Results Panel -->
+                        <div class="panel results-panel">
+                            <div class="panel-header-with-badge">
+                                <h3><i class="fa-solid fa-chart-simple"></i> Simulation Results</h3>
+                                <span id="teleportation-badge" class="result-badge">θ = 0.00 rad</span>
+                            </div>
+                            <hr class="panel-divider">
+
+                            <div class="results-grid">
+                                <!-- Circuit diagram container -->
+                                <div class="result-item circuit-container w-full">
+                                    <h4>Full Teleportation Circuit</h4>
+                                    <div id="teleportation-circuit-img-container" class="circuit-placeholder">
+                                        <p class="text-muted"><i class="fa-solid fa-diagram-project"></i> Run the simulation to see the circuit diagram.</p>
+                                    </div>
+                                </div>
+
+                                <!-- Teleportation verification analytics -->
+                                <div class="result-item verification-container">
+                                    <h4>Teleportation Proof (Did it work?)</h4>
+                                    <p class="form-help" style="margin-bottom: 12px;">Compare Alice's initial state on Q0 with Bob's reconstructed state on Q2. They should match perfectly!</p>
+                                    <div class="verification-grid">
+                                        <div class="verification-card">
+                                            <h5>Alice's Target State (Input)</h5>
+                                            <div class="state-vector">
+                                                |ψ⟩ = <span id="theory-coeff-0">1.0000</span>|0⟩ + <span id="theory-coeff-1">0.0000</span>|1⟩
+                                            </div>
+                                            <div class="probability-bars">
+                                                <div class="prob-bar-row">
+                                                    <span>|0⟩ (Up):</span>
+                                                    <div class="progress-bar-container"><div id="theory-bar-0" class="progress-bar" style="width: 100%;"></div></div>
+                                                    <span id="theory-pct-0">100%</span>
+                                                </div>
+                                                <div class="prob-bar-row">
+                                                    <span>|1⟩ (Down):</span>
+                                                    <div class="progress-bar-container"><div id="theory-bar-1" class="progress-bar" style="width: 0%;"></div></div>
+                                                    <span id="theory-pct-1">0%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="verification-card">
+                                            <h5>Bob's Reconstructed State (Output)</h5>
+                                            <div class="state-vector">
+                                                |ψ'⟩ = <span id="measured-coeff-0">?</span>|0⟩ + <span id="measured-coeff-1">?</span>|1⟩
+                                            </div>
+                                            <div class="probability-bars">
+                                                <div class="prob-bar-row">
+                                                    <span>|0⟩ (Up):</span>
+                                                    <div class="progress-bar-container"><div id="measured-bar-0" class="progress-bar accent-purple" style="width: 0%;"></div></div>
+                                                    <span id="measured-pct-0">?%</span>
+                                                </div>
+                                                <div class="prob-bar-row">
+                                                    <span>|1⟩ (Down):</span>
+                                                    <div class="progress-bar-container"><div id="measured-bar-1" class="progress-bar accent-purple" style="width: 0%;"></div></div>
+                                                    <span id="measured-pct-1">?%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Probability counts chart container -->
+                                <div class="result-item chart-container w-full">
+                                    <h4>Full 3-Qubit Register Counts (c₂c₁c₀)</h4>
+                                    <small class="text-muted block mb-10">Here, c₂ is Bob's qubit, while c₁ and c₀ are Alice's qubits. Notice how Bob's qubit perfectly replicates the input probabilities while Alice's qubits are completely random.</small>
+                                    <div class="chart-wrapper">
+                                        <canvas id="teleportation-chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Custom Script -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
