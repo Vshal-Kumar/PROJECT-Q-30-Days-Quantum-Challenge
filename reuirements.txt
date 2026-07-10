@@ -5,3 +5,6 @@ pandas
 matplotlib
 numpy
 pylatexenc
+qiskit-algorithms
+qiskit-optimization
+networkx
