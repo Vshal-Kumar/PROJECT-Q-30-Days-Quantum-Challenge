@@ -8,3 +8,5 @@ pylatexenc
 qiskit-algorithms
 qiskit-optimization
 networkx
+qiskit-machine-learning
+scikit-learn
