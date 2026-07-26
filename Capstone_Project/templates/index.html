@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QAuth: Quantum Mutual Authentication Dashboard</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- App Shell -->
+    <div class="app-container">
+        <!-- Sidebar Configuration -->
+        <header class="app-header">
+            <div class="logo">
+                <i class="fa-solid fa-shield-halved text-glow"></i>
+                <h1>QAuth<span>Simulation Suite</span></h1>
+            </div>
+            <p class="subtitle">Bell-State Challenge–Response & BB84 Key Exchange</p>
+        </header>
+
+        <main class="dashboard-grid">
+            <!-- Left Panel: Control and Config -->
+            <section class="panel-column control-panel">
+                <!-- Registration Card -->
+                <div class="glass-card">
+                    <h2><i class="fa-solid fa-key"></i> Key Registration</h2>
+                    <div class="form-group">
+                        <label for="secret-key">Pre-Shared Secret Key (S)</label>
+                        <div class="input-with-action">
+                            <input type="text" id="secret-key" value="capstone_pre_shared_secret_key" placeholder="Enter secret or auto-generate">
+                            <button id="btn-generate-key" class="btn-secondary" title="Auto-generate Secret Key"><i class="fa-solid fa-rotate"></i></button>
+                        </div>
+                        <button id="btn-register" class="btn-primary w-full mt-2">Register Secret Key</button>
+                    </div>
+                </div>
+
+                <!-- Simulation Settings Card -->
+                <div class="glass-card mt-4">
+                    <h2><i class="fa-solid fa-sliders"></i> Handshake Parameters</h2>
+                    <div class="form-group">
+                        <label for="noise-rate">Quantum Channel Noise Rate: <span id="noise-display">2.0%</span></label>
+                        <input type="range" id="noise-rate" min="0" max="0.25" step="0.01" value="0.02">
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="epr-size">EPR Pairs (N)</label>
+                            <input type="number" id="epr-size" min="10" max="250" value="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="bb84-size">BB84 Qubits (M)</label>
+                            <input type="number" id="bb84-size" min="20" max="250" value="100">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attack Execution Board -->
+                <div class="glass-card mt-4">
+                    <h2><i class="fa-solid fa-circle-nodes"></i> Scenario Controller</h2>
+                    <button id="btn-run-normal" class="btn-success btn-run w-full mb-3" data-scenario="none">
+                        <i class="fa-solid fa-play"></i> Run Normal Handshake
+                    </button>
+                    <div class="divider"><span>Simulate Channel Threats</span></div>
+                    <div class="button-deck">
+                        <button class="btn-danger btn-run" data-scenario="eavesdrop">
+                            <i class="fa-solid fa-ear-listen"></i> Eavesdropping (MitM)
+                        </button>
+                        <button class="btn-danger btn-run" data-scenario="impersonate">
+                            <i class="fa-solid fa-user-secret"></i> Impersonation
+                        </button>
+                        <button class="btn-danger btn-run" data-scenario="replay">
+                            <i class="fa-solid fa-reply-all"></i> Replay Attack
+                        </button>
+                        <button class="btn-danger btn-run" data-scenario="wrong_secret">
+                            <i class="fa-solid fa-xmark"></i> Wrong Secret
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Telemetry & Logs -->
+            <section class="panel-column telemetry-panel">
+                <!-- Status Header -->
+                <div class="glass-card status-card">
+                    <div class="status-content">
+                        <div>
+                            <span class="status-label">Authentication Status</span>
+                            <h3 id="auth-status" class="status-value status-standby">STANDBY</h3>
+                        </div>
+                        <div class="encryption-badge-container">
+                            <span class="status-label">AES-256 Payload</span>
+                            <div id="encryption-badge" class="encryption-badge-inactive">
+                                <i class="fa-solid fa-lock"></i> <span>SECURE</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metrics Grid -->
+                <div class="metrics-grid mt-4">
+                    <div class="metric-card glass-card">
+                        <span class="metric-label">Authentication QBER</span>
+                        <div class="metric-value-container">
+                            <span id="metric-auth-qber" class="metric-val">--</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div id="bar-auth-qber" class="progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="metric-card glass-card">
+                        <span class="metric-label">BB84 Key QBER</span>
+                        <div class="metric-value-container">
+                            <span id="metric-bb84-qber" class="metric-val">--</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div id="bar-bb84-qber" class="progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="metric-card glass-card">
+                        <span class="metric-label">Handshake Latency</span>
+                        <span id="metric-latency" class="metric-val">--</span>
+                    </div>
+                    <div class="metric-card glass-card">
+                        <span class="metric-label">Qiskit Gates & Depth</span>
+                        <div class="metric-sub-values">
+                            <span>Gates: <strong id="metric-gates">--</strong></span>
+                            <span>Depth: <strong id="metric-depth">--</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quantum Execution Logs Terminal -->
+                <div class="glass-card terminal-card mt-4">
+                    <div class="terminal-header">
+                        <div class="window-dots">
+                            <span class="dot-red"></span>
+                            <span class="dot-yellow"></span>
+                            <span class="dot-green"></span>
+                        </div>
+                        <span class="terminal-title">AerSimulator Console</span>
+                        <button id="btn-clear-terminal" class="btn-text" title="Clear console"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                    <div id="terminal-body" class="terminal-body">
+                        <div class="terminal-line system-line">[SYSTEM] Terminal initialized. Waiting for handshake initiation...</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Lower Section: Plotting & Statistical Benchmarks -->
+        <section class="benchmarks-section mt-6">
+            <div class="section-title-bar">
+                <h2><i class="fa-solid fa-chart-line text-glow"></i> Performance & Robustness Evaluation</h2>
+                <button id="btn-run-benchmark" class="btn-primary">
+                    <i class="fa-solid fa-gears"></i> Run Live Benchmark (Regenerate Plots)
+                </button>
+            </div>
+            
+            <div class="benchmark-grid mt-4">
+                <!-- Benchmarks Table -->
+                <div class="glass-card table-card">
+                    <h3>Simulation Telemetry Table</h3>
+                    <div class="table-container mt-2">
+                        <table id="benchmark-table">
+                            <thead>
+                                <tr>
+                                    <th>Scenario</th>
+                                    <th>Auth Success</th>
+                                    <th>Avg Auth QBER</th>
+                                    <th>BB84 Success</th>
+                                    <th>Avg BB84 QBER</th>
+                                    <th>Key Derived</th>
+                                    <th>Avg Latency</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="placeholder-row">
+                                    <td colspan="7">Click "Run Live Benchmark" to gather statistical metrics.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Visualization Diagrams -->
+                <div class="plots-container">
+                    <div class="glass-card plot-card">
+                        <h3>QBER vs. Channel Noise</h3>
+                        <div class="img-wrapper">
+                            <img id="plot-qber-noise" src="/static/diagrams/qber_vs_noise.png" alt="QBER vs Noise Level Plot">
+                        </div>
+                    </div>
+                    <div class="glass-card plot-card">
+                        <h3>Detection Rate vs. Batch Size</h3>
+                        <div class="img-wrapper">
+                            <img id="plot-detection-batch" src="/static/diagrams/detection_vs_batch_size.png" alt="Detection Rate vs Batch Size Plot">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="app-footer">
+            <p>QAuth Simulation Testbed. Built with Qiskit 1.0 & Flask. Capstone Project.</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
